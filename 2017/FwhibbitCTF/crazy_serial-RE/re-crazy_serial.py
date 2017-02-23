@@ -1,12 +1,16 @@
 import angr
+import simuvex
 
 base = 0x400000
 
 p = angr.Project('./crazy_serial')
-e = p.factory.entry_state(addr=base+0x01129)
+e = p.factory.entry_state(addr=base+0x01129, remove_options={simuvex.o.LAZY_SOLVES})
 
 email = e.se.BVS('email', 0x18*8)
 serial = e.se.BVS('serial', 0x1B*8)
+
+e.add_constraints(serial.get_byte(11) == '-')
+e.add_constraints(serial.get_byte(18) == '-')
 
 e.memory.store(e.regs.rbp-0x230, email)
 e.memory.store(e.regs.rbp-0x430, serial)
