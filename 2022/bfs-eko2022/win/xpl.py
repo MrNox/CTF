@@ -72,9 +72,9 @@ syn = b'Hello\0'
 pkg = b''
 
 hdr = [
-	b'Eko2022\0',	# cookie
-	b'\x54',		# message id
-	p16(0xFFFF)		# package size
+	b'Eko2022\0',   # cookie
+	b'\x54',        # message id
+	p16(0xFFFF)	    # package size
 ]
 
 ctx_switch_64to32 = [
