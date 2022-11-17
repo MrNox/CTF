@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iretd-x64", "iretd-x64\iretd-x64.vcxproj", "{1808FC47-899C-409A-A323-9A409FEDA788}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1808FC47-899C-409A-A323-9A409FEDA788}.Debug|x64.ActiveCfg = Debug|x64
+		{1808FC47-899C-409A-A323-9A409FEDA788}.Debug|x64.Build.0 = Debug|x64
+		{1808FC47-899C-409A-A323-9A409FEDA788}.Debug|x86.ActiveCfg = Debug|Win32
+		{1808FC47-899C-409A-A323-9A409FEDA788}.Debug|x86.Build.0 = Debug|Win32
+		{1808FC47-899C-409A-A323-9A409FEDA788}.Release|x64.ActiveCfg = Release|x64
+		{1808FC47-899C-409A-A323-9A409FEDA788}.Release|x64.Build.0 = Release|x64
+		{1808FC47-899C-409A-A323-9A409FEDA788}.Release|x86.ActiveCfg = Release|Win32
+		{1808FC47-899C-409A-A323-9A409FEDA788}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FF08B4BA-58C7-4175-AE19-2120FB70D475}
+	EndGlobalSection
+EndGlobal
